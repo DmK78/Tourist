@@ -65,4 +65,9 @@ public class Loc {
     public int hashCode() {
         return Objects.hash(id, name, latitude, longitude);
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }
