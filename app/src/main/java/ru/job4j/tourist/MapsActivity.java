@@ -1,11 +1,9 @@
 package ru.job4j.tourist;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,8 +15,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
@@ -26,15 +22,16 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 
 import java.util.Arrays;
-import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -56,6 +53,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
         buttonCurrentLoc = findViewById(R.id.buttonCurrentLoc);
         buttonSaveLoc = findViewById(R.id.buttonSaveLoc);
         buttonClearHistory = findViewById(R.id.buttonClearHistory);
@@ -67,6 +65,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         buttonClearHistory.setOnClickListener(this::clearHistory);
 
         Places.initialize(this, getString(R.string.google_maps_key));
+
         AutocompleteSupportFragment search = (AutocompleteSupportFragment)
                 getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
         search.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
@@ -74,7 +73,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onPlaceSelected(Place place) {
                 LatLng pos = place.getLatLng();
-
+                mLocation = new Location("");
                 mLocation.setLatitude(place.getLatLng().latitude);
                 mLocation.setLongitude(place.getLatLng().longitude);
                 MarkerOptions marker = new MarkerOptions().position(pos).title("Hello Maps");
@@ -91,12 +90,30 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void clearHistory(View view) {
-        dbHelper.deleteAllLocation();
-        buttonSaveLoc.setText("Save location");
+        if(!dbHelper.getAllLocations().isEmpty()){
+            new AlertDialog.Builder(this)
+                    .setTitle("Confirmation")
+                    .setMessage("Do you really want to clear history?")
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int whichButton) {
+
+                            dbHelper.deleteAllLocation();
+                            buttonSaveLoc.setText("Save location");
+                        }
+                    })
+                    .setNegativeButton(android.R.string.no, null).show();
+
+
+        }
+
+
+
     }
 
     private void viewHistory(View view) {
-        startActivity(new Intent(getApplicationContext(),HistoryActivity.class));
+        startActivity(new Intent(getApplicationContext(), HistoryActivity.class));
     }
 
     private void saveCurrentLocation(View view) {
@@ -119,6 +136,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
+        UiSettings uiSettings = googleMap.getUiSettings();
+        uiSettings.setZoomControlsEnabled(true);
+
         LocationListener loc = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
