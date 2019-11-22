@@ -14,19 +14,26 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -37,6 +44,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private DBHelper dbHelper;
     private Button buttonShowHistory, buttonSaveLoc, buttonClearHistory, buttonCurrentLoc;
     private Loc lastLocation = new Loc();
+    public final static String TAG = "Tourist";
 
 
     @Override
@@ -57,6 +65,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         buttonSaveLoc.setOnClickListener(this::saveCurrentLocation);
         buttonShowHistory.setOnClickListener(this::viewHistory);
         buttonClearHistory.setOnClickListener(this::clearHistory);
+
+        Places.initialize(this, getString(R.string.google_maps_key));
+        AutocompleteSupportFragment search = (AutocompleteSupportFragment)
+                getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+        search.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
+        search.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                LatLng pos = place.getLatLng();
+
+                mLocation.setLatitude(place.getLatLng().latitude);
+                mLocation.setLongitude(place.getLatLng().longitude);
+                MarkerOptions marker = new MarkerOptions().position(pos).title("Hello Maps");
+                googleMap.addMarker(marker);
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pos, 15));
+            }
+
+            @Override
+            public void onError(Status status) {
+                Log.i(TAG, "An error occurred: " + status);
+            }
+        });
+
     }
 
     private void clearHistory(View view) {

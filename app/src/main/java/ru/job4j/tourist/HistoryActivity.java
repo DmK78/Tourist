@@ -42,6 +42,7 @@ public class HistoryActivity extends FragmentActivity implements OnMapReadyCallb
                 Toast.makeText(HistoryActivity.this, ""+loc.getName(), Toast.LENGTH_SHORT).show();
                 LatLng curLoc = new LatLng(loc.getLatitude(), loc.getLongitude());
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(curLoc, 15));
+
             }
         });
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
