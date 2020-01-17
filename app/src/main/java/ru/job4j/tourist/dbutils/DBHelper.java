@@ -20,7 +20,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static DBHelper mInstance;
 
     public static final String DB = "locations.db";
-    public static final int VERSION = 2;
+    public static final int VERSION = 4;
     private Context context;
 
     public static DBHelper getInstance(Context context) {
@@ -116,13 +116,17 @@ public class DBHelper extends SQLiteOpenHelper {
         return result;
     }
 
-    public void addTrack(Track track) {
+    public Track addTrack(Track track) {
+
+
         ContentValues value = new ContentValues();
         value.put(DBSchema.TracksTable.Cols.NAME, track.getName());
-        dbWrite.insert(DBSchema.LocationsTable.NAME, null, value);
+        long trackId = dbWrite.insert(DBSchema.LocationsTable.NAME, null, value);
         for (Point point : track.getPoints()) {
             addLocation(point);
         }
+        track.setId((int)trackId);
+        return track;
     }
 
 

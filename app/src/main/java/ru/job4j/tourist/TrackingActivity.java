@@ -15,17 +15,22 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import ru.job4j.tourist.dbutils.DBHelper;
 import ru.job4j.tourist.model.Point;
 import ru.job4j.tourist.model.Track;
 
-public class TrackingActivity extends BaseActivity implements TrackingFragment.TrackerActionsListener, TrackingFragment.TrackerClickListenet {
+public class TrackingActivity extends BaseActivity implements TrackingFragment.TrackerActionsListener, TrackingFragment.TrackerClickListener {
     private boolean threadIsRunnning = false;
     private DBHelper dbHelper;
     public static String MY_GPS = "my_gps";
+    private Fragment trackerHistoryFragment;
+    private FragmentManager fm;
 
     @Override
     public Fragment loadFrg() {
@@ -63,6 +68,7 @@ public class TrackingActivity extends BaseActivity implements TrackingFragment.T
 
     @Override
     public void stopTracker() {
+
         threadIsRunnning = false;
         Toast.makeText(getApplicationContext(), "Tracker is stopped", Toast.LENGTH_SHORT).show();
 
@@ -70,16 +76,15 @@ public class TrackingActivity extends BaseActivity implements TrackingFragment.T
 
     @Override
     public void onHistoryFragmentClick() {
-        if (secondFragment == null) {
-            secondFragment = new SecondFragment();
+        fm = getSupportFragmentManager();
+        if (trackerHistoryFragment == null) {
+            trackerHistoryFragment = new TrackingHistoryFragment();
         }
-        secondFragment.setArguments(bundle);
+
         fm.beginTransaction()
-                .replace(R.id.fragment_container, secondFragment)
+                .replace(R.id.mainContainer, trackerHistoryFragment)
                 .addToBackStack(null)
                 .commit();
-
-
 
 
     }
@@ -113,7 +118,8 @@ public class TrackingActivity extends BaseActivity implements TrackingFragment.T
 
         @Override
         public void run() {
-            Track track = new Track("", new ArrayList<>());
+            Date currentTime = Calendar.getInstance().getTime();
+            Track track = dbHelper.addTrack(new Track(currentTime.toString(), new ArrayList<>()));
 
             runOnUiThread(new Runnable() {
                 @Override
@@ -148,7 +154,10 @@ public class TrackingActivity extends BaseActivity implements TrackingFragment.T
 
 
                     //dbHelper.addLocation(new Point("", curLocation[0]));
-                    track.getPoints().add(new Point("", curLocation[0]));
+                    //track.getPoints().add(new Point("", curLocation[0]));
+
+                    dbHelper.addLocation(new Point("",curLocation[0],track.getId()));
+
                     lastLocation[0] = curLocation[0];
 
                     Log.i(MY_GPS, "Added " + curLocation[0].getLatitude() + " " + curLocation[0].getLongitude());

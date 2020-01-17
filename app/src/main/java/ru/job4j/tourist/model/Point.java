@@ -31,6 +31,12 @@ public class Point {
         this.trackId = trackId;
     }
 
+    public Point(String name, Location location, int trackId) {
+        this.name = name;
+        this.location = location;
+        this.trackId = trackId;
+    }
+
     public int getId() {
         return id;
     }

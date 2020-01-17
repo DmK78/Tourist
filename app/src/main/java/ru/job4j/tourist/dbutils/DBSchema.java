@@ -26,7 +26,7 @@ public class DBSchema {
 
         public static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " +
                 TracksTable.NAME + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                LocationsTable.Cols.NAME + " TEXT, " +
+                LocationsTable.Cols.NAME + " TEXT " +
                 ")";
 
 

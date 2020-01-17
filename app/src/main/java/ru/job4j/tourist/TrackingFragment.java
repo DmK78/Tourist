@@ -36,13 +36,14 @@ public class TrackingFragment extends Fragment implements OnMapReadyCallback {
     private Location mLocation;
     private static final int REQUEST_PERMISSION_LOCATION = 255; // int should be between 0 and 255
     private DBHelper dbHelper;
-    private Button buttonStart, buttonStop;
+    private Button buttonStart, buttonStop, buttonHistory;
     private ImageButton buttonGetLoc;
     private Point lastLocation = new Point();
     public final static String TAG = "Tourist";
     private boolean threadIsRunnning = false;
     private TrackerActionsListener callback;
     private TextView textViewCount;
+    private TrackerClickListener clickListener;
 
     @Nullable
     @Override
@@ -52,28 +53,36 @@ public class TrackingFragment extends Fragment implements OnMapReadyCallback {
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        buttonStart = view.findViewById(R.id.butTrackerStart);
-        buttonStop = view.findViewById(R.id.butTrackerStop);
+        buttonStart = view.findViewById(R.id.btnTrackerStart);
+        buttonStop = view.findViewById(R.id.btnTrackerStop);
         buttonGetLoc = view.findViewById(R.id.butTrackerGetLoc);
+        buttonHistory=view.findViewById(R.id.btnTrackerHistory);
         //textViewCount=view.findViewById(R.id.tvTrackerCount);
         buttonGetLoc.setOnClickListener(this::getCurrentLocation);
         buttonStart.setOnClickListener(this::startTracker);
         buttonStop.setOnClickListener(this::stopTracker);
+        buttonHistory.setOnClickListener(this::viewTracksHistory);
 
 
         return view;
+    }
+
+    private void viewTracksHistory(View view) {
+        clickListener.onHistoryFragmentClick();
     }
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         callback = (TrackerActionsListener) context;
+        clickListener = (TrackerClickListener) context;
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         callback = null;
+        clickListener=null;
     }
 
     @Override
@@ -168,7 +177,7 @@ public class TrackingFragment extends Fragment implements OnMapReadyCallback {
         void startTracker();
         void stopTracker();
     }
-    public interface TrackerClickListenet{
+    public interface TrackerClickListener {
         void onHistoryFragmentClick();
     }
 }
