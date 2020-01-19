@@ -12,6 +12,12 @@ import androidx.room.Update;
 
 import java.util.Objects;
 
+/**
+ * @author Dmitry Kolganov (mailto:dmk78@inbox.ru)
+ * @since 15.01.2020
+ * @version $Id$
+ */
+
 //@Entity(tableName = "points",
 //        foreignKeys = @ForeignKey(entity = Track.class, parentColumns = "id", childColumns = "track_id"), indices = {@Index(("point_id"))})
 public class Point {
@@ -101,5 +107,10 @@ public class Point {
  //   @Override
     public int hashCode() {
         return Objects.hash(pointId, name, location, trackId);
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

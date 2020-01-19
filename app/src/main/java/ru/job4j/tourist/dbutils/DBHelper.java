@@ -11,10 +11,17 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
+import ru.job4j.tourist.MapsContract;
 import ru.job4j.tourist.model.Point;
 import ru.job4j.tourist.model.Track;
 
-public class DBHelper extends SQLiteOpenHelper {
+/**
+ * @author Dmitry Kolganov (mailto:dmk78@inbox.ru)
+ * @since 15.01.2020
+ * @version $Id$
+ */
+
+public class DBHelper extends SQLiteOpenHelper implements MapsContract.MapsModelInterface {
     SQLiteDatabase dbRead = getReadableDatabase();
     SQLiteDatabase dbWrite = getWritableDatabase();
     private static DBHelper mInstance;
@@ -29,6 +36,7 @@ public class DBHelper extends SQLiteOpenHelper {
         }
         return mInstance;
     }
+
 
     private DBHelper(Context context) {
         super(context, DB, null, VERSION);
@@ -48,7 +56,7 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public List<Point> getAllPoints() {
+    public List<Point> getAllPoints1() {
         List<Point> result = new ArrayList<>();
         Cursor cursor = dbRead.query(
                 DBSchema.LocationsTable.NAME,
@@ -126,7 +134,7 @@ public class DBHelper extends SQLiteOpenHelper {
         for (Point point : track.getPoints()) {
             addLocation(point);
         }
-        track.setId((int)trackId);
+        track.setId((int) trackId);
         return track;
     }
 
@@ -171,7 +179,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     }
 
-    public void deleteLocation(Point loc) {
+    public void deletePoint(Point loc) {
         dbWrite.delete(DBSchema.LocationsTable.NAME, "id = ?", new String[]{String.valueOf(loc.getPointId())});
     }
 
@@ -179,13 +187,82 @@ public class DBHelper extends SQLiteOpenHelper {
         dbWrite.execSQL("delete from " + DBSchema.LocationsTable.NAME);
     }
 
-    public void deleteAllTracks(){
+    public void deleteAllTracks() {
         List<Track> tracks = getAllTracks();
-        for(Track track: tracks){
-            for(Point point:track.getPoints()){
-                deleteLocation(point);
+        for (Track track : tracks) {
+            for (Point point : track.getPoints()) {
+                deletePoint(point);
             }
             dbWrite.delete(DBSchema.TracksTable.NAME, "id = ?", new String[]{String.valueOf(track.getId())});
         }
+    }
+
+    @Override
+    public void addPoint(Point point) {
+        Log.i("point", String.valueOf(point.getLocation().getLatitude() + " " + point.getLocation().getLongitude()));
+        ContentValues value = new ContentValues();
+        value.put(DBSchema.LocationsTable.Cols.NAME, point.getName());
+        value.put(DBSchema.LocationsTable.Cols.LATITUDE, point.getLocation().getLatitude());
+        value.put(DBSchema.LocationsTable.Cols.LONGITUDE, point.getLocation().getLongitude());
+        value.put(DBSchema.LocationsTable.Cols.TRACK_ID, point.getTrackId());
+        dbWrite.insert(DBSchema.LocationsTable.NAME, null, value);
+
+    }
+
+
+    public List<Point> getAllPoints() {
+        List<Point> result = new ArrayList<>();
+        Cursor cursor = dbRead.query(
+                DBSchema.LocationsTable.NAME,
+                null, null, null,
+                null, null, null
+        );
+        if (cursor.moveToFirst()) {
+            do {
+                Location location = new Location("");
+                location.setLatitude(Double.valueOf(cursor.getString(cursor.getColumnIndex(DBSchema.LocationsTable.Cols.LATITUDE))));
+                location.setLongitude(Double.valueOf(cursor.getString(cursor.getColumnIndex(DBSchema.LocationsTable.Cols.LONGITUDE))));
+                Log.i("point", String.valueOf("get loc " + location.getLatitude() + " " + location.getLongitude()));
+                result.add(new Point(
+                        cursor.getInt(cursor.getColumnIndex(DBSchema.LocationsTable.Cols.ID)),
+                        cursor.getString(cursor.getColumnIndex(DBSchema.LocationsTable.Cols.NAME)), location));
+            } while (cursor.moveToNext());
+        }
+        return result;
+    }
+
+    @Override
+    public void deleteAllFavPoints() {
+        List<Point> points = getAllPoints();
+        for (Point point : points) {
+            if (point.getTrackId() == 0) {
+                deletePoint(point);
+            }
+        }
+
+    }
+
+    @Override
+    public List<Point> getAllFavPoints() {
+        List<Point> result = new ArrayList<>();
+        Cursor cursor = dbRead.query(
+                DBSchema.LocationsTable.NAME,
+                null, null, null,
+                null, null, null
+        );
+        if (cursor.moveToFirst()) {
+            do {
+                if (cursor.getInt(cursor.getColumnIndex(DBSchema.LocationsTable.Cols.TRACK_ID)) == 0) {
+                    Location location = new Location("");
+                    location.setLatitude(Double.valueOf(cursor.getString(cursor.getColumnIndex(DBSchema.LocationsTable.Cols.LATITUDE))));
+                    location.setLongitude(Double.valueOf(cursor.getString(cursor.getColumnIndex(DBSchema.LocationsTable.Cols.LONGITUDE))));
+                    Log.i("point", String.valueOf("get loc " + location.getLatitude() + " " + location.getLongitude()));
+                    result.add(new Point(
+                            cursor.getInt(cursor.getColumnIndex(DBSchema.LocationsTable.Cols.ID)),
+                            cursor.getString(cursor.getColumnIndex(DBSchema.LocationsTable.Cols.NAME)), location));
+                }
+            } while (cursor.moveToNext());
+        }
+        return result;
     }
 }

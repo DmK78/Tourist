@@ -28,6 +28,12 @@ import ru.job4j.tourist.dbutils.MainModel;
 import ru.job4j.tourist.model.Point;
 import ru.job4j.tourist.model.Track;
 
+/**
+ * @author Dmitry Kolganov (mailto:dmk78@inbox.ru)
+ * @since 15.01.2020
+ * @version $Id$
+ */
+
 public class TrackingActivity extends BaseActivity implements TrackingFragment.TrackerActionsListener, TrackingFragment.TrackerClickListener {
     private boolean threadIsRunnning = false;
     private DBHelper dbHelper;

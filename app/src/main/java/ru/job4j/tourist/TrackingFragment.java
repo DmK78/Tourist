@@ -45,6 +45,12 @@ public class TrackingFragment extends Fragment implements OnMapReadyCallback {
     private TextView textViewCount;
     private TrackerClickListener clickListener;
 
+    /**
+     * @author Dmitry Kolganov (mailto:dmk78@inbox.ru)
+     * @since 15.01.2020
+     * @version $Id$
+     */
+
 
     @Nullable
     @Override

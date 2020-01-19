@@ -8,6 +8,12 @@ import androidx.room.PrimaryKey;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * @author Dmitry Kolganov (mailto:dmk78@inbox.ru)
+ * @since 15.01.2020
+ * @version $Id$
+ */
+
 @Entity(tableName = "tracks",indices = {@Index("id")})
 public class Track {
     @PrimaryKey(autoGenerate = true)

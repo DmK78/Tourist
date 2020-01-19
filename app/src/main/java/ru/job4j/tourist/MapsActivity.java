@@ -6,23 +6,33 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
+
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.List;
 
 import ru.job4j.tourist.dbutils.MainModel;
+import ru.job4j.tourist.model.Point;
 import ru.job4j.tourist.model.Track;
 
-public class MapsActivity extends BaseActivity {
+/**
+ * @author Dmitry Kolganov (mailto:dmk78@inbox.ru)
+ * @since 15.01.2020
+ * @version $Id$
+ */
+
+public class MapsActivity extends BaseActivity implements MapsFragment.OnMapsFrgClickListener {
     private FragmentManager fm;
-    private Fragment tracksFragment;
-    private Fragment placesFragment;
-    private boolean threadIsRunnning = false;
-    private MainModel mainModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,11 +66,8 @@ public class MapsActivity extends BaseActivity {
         }
     }
 
-
-
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
-
+    public void onShowHistoryClicked() {
+        startActivity(new Intent(getApplicationContext(), HistoryActivity.class));
     }
 }

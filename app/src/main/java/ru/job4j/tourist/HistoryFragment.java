@@ -29,6 +29,12 @@ import java.util.List;
 import ru.job4j.tourist.dbutils.DBHelper;
 import ru.job4j.tourist.model.Point;
 
+/**
+ * @author Dmitry Kolganov (mailto:dmk78@inbox.ru)
+ * @since 15.01.2020
+ * @version $Id$
+ */
+
 public class HistoryFragment extends Fragment implements OnMapReadyCallback {
 
 

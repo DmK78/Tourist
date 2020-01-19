@@ -1,5 +1,11 @@
 package ru.job4j.tourist.dbutils;
 
+/**
+ * @author Dmitry Kolganov (mailto:dmk78@inbox.ru)
+ * @since 15.01.2020
+ * @version $Id$
+ */
+
 public class DBSchema {
     public static final class LocationsTable {
         public static final String NAME = "locations";
