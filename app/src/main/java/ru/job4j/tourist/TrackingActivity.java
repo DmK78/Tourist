@@ -11,9 +11,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.textclassifier.TextClassifierEvent;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -22,12 +24,14 @@ import java.util.Calendar;
 import java.util.Date;
 
 import ru.job4j.tourist.dbutils.DBHelper;
+import ru.job4j.tourist.dbutils.MainModel;
 import ru.job4j.tourist.model.Point;
 import ru.job4j.tourist.model.Track;
 
 public class TrackingActivity extends BaseActivity implements TrackingFragment.TrackerActionsListener, TrackingFragment.TrackerClickListener {
     private boolean threadIsRunnning = false;
     private DBHelper dbHelper;
+    //private MainModel mainModel;
     public static String MY_GPS = "my_gps";
     private Fragment trackerHistoryFragment;
     private FragmentManager fm;
@@ -60,6 +64,13 @@ public class TrackingActivity extends BaseActivity implements TrackingFragment.T
     }
 
     @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        //mainModel = new MainModel(getApplicationContext());
+        dbHelper = DBHelper.getInstance(getApplicationContext());
+    }
+
+    @Override
     public void startTracker() {
         threadIsRunnning = true;
         Tracker tracker = new Tracker();
@@ -76,15 +87,7 @@ public class TrackingActivity extends BaseActivity implements TrackingFragment.T
 
     @Override
     public void onHistoryFragmentClick() {
-        fm = getSupportFragmentManager();
-        if (trackerHistoryFragment == null) {
-            trackerHistoryFragment = new TrackingHistoryFragment();
-        }
-
-        fm.beginTransaction()
-                .replace(R.id.mainContainer, trackerHistoryFragment)
-                .addToBackStack(null)
-                .commit();
+        startActivity(new Intent(this, TrackingHistoryActivity.class));
 
 
     }
@@ -92,7 +95,8 @@ public class TrackingActivity extends BaseActivity implements TrackingFragment.T
     class Tracker implements Runnable {
         Location[] lastLocation = {new Location("")};
         Location[] curLocation = {new Location("")};
-        DBHelper dbHelper = DBHelper.getInstance(getApplicationContext());
+        //DBHelper dbHelper = DBHelper.getInstance(getApplicationContext());
+        // MainModel mainModel = new MainModel(getApplicationContext());
         LocationListener locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
@@ -121,6 +125,9 @@ public class TrackingActivity extends BaseActivity implements TrackingFragment.T
             Date currentTime = Calendar.getInstance().getTime();
             Track track = dbHelper.addTrack(new Track(currentTime.toString(), new ArrayList<>()));
 
+            //long trackId = mainModel.insertTrack(new Track(currentTime.toString(), new ArrayList<>()));
+            //Track track = mainModel.getTrackByID((int) trackId);
+            Log.i(MY_GPS, "TrackId =  " + track.getId());
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -150,14 +157,24 @@ public class TrackingActivity extends BaseActivity implements TrackingFragment.T
                         Math.round(lastLocation[0].getLatitude() * accuracy) / accuracy &&
                         Math.round(curLocation[0].getLongitude() * accuracy) / accuracy !=
                                 Math.round(lastLocation[0].getLongitude() * accuracy) / accuracy) {*/
-                if (curLocation[0] != lastLocation[0]) {
+                if (curLocation[0] != lastLocation[0] && curLocation[0].getLatitude()!=0 && curLocation[0].getLongitude()!=0) {
 
 
                     //dbHelper.addLocation(new Point("", curLocation[0]));
                     //track.getPoints().add(new Point("", curLocation[0]));
 
-                    dbHelper.addLocation(new Point("",curLocation[0],track.getId()));
+                    //dbHelper.addLocation(new Point("",curLocation[0],track.getPointId()));
 
+                    //track.getPoints().add(new Point("", curLocation[0], track.getPointId()));
+                    //mainModel.insertPoint(new Point("", curLocation[0], (int)trackId));
+
+                    //track.getPoints().add(new Point("", curLocation[0], (int) trackId));
+                    dbHelper.addLocation(new Point("", curLocation[0], (int) track.getId()));
+
+
+
+
+                    //mainModel.updateTrack(track);
                     lastLocation[0] = curLocation[0];
 
                     Log.i(MY_GPS, "Added " + curLocation[0].getLatitude() + " " + curLocation[0].getLongitude());

@@ -2,47 +2,65 @@ package ru.job4j.tourist.model;
 
 import android.location.Location;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.ForeignKey;
+import androidx.room.Ignore;
+import androidx.room.Index;
+import androidx.room.PrimaryKey;
+import androidx.room.Update;
+
 import java.util.Objects;
 
+//@Entity(tableName = "points",
+//        foreignKeys = @ForeignKey(entity = Track.class, parentColumns = "id", childColumns = "track_id"), indices = {@Index(("point_id"))})
 public class Point {
-    private int id;
+   // @PrimaryKey(autoGenerate = true)
+ //   @ColumnInfo(name = "point_id")
+    private int pointId;
     private String name;
     private Location location;
+ //   @ColumnInfo(name = "track_id")
     private int trackId;
 
     public Point() {
     }
 
+ //   @Ignore
     public Point(String name, Location location) {
         this.name = name;
         this.location = location;
     }
 
+ //   @Ignore
     public Point(int id, String name, Location location) {
-        this.id = id;
+        this.pointId = id;
         this.name = name;
         this.location = location;
     }
 
+ //   @Ignore
     public Point(int id, String name, Location location, int trackId) {
-        this.id = id;
+        this.pointId = id;
         this.name = name;
         this.location = location;
         this.trackId = trackId;
     }
 
+ //   @Ignore
     public Point(String name, Location location, int trackId) {
         this.name = name;
         this.location = location;
         this.trackId = trackId;
     }
 
-    public int getId() {
-        return id;
+
+    public int getPointId() {
+        return pointId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setPointId(int pointId) {
+        this.pointId = pointId;
     }
 
     public String getName() {
@@ -69,19 +87,19 @@ public class Point {
         this.trackId = trackId;
     }
 
-    @Override
+  //  @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Point point = (Point) o;
-        return id == point.id &&
+        return pointId == point.pointId &&
                 trackId == point.trackId &&
                 Objects.equals(name, point.name) &&
                 Objects.equals(location, point.location);
     }
 
-    @Override
+ //   @Override
     public int hashCode() {
-        return Objects.hash(id, name, location, trackId);
+        return Objects.hash(pointId, name, location, trackId);
     }
 }

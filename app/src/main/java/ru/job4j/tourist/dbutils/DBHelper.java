@@ -20,7 +20,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static DBHelper mInstance;
 
     public static final String DB = "locations.db";
-    public static final int VERSION = 4;
+    public static final int VERSION = 8;
     private Context context;
 
     public static DBHelper getInstance(Context context) {
@@ -58,8 +58,8 @@ public class DBHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 Location location = new Location("");
-                location.setLatitude(cursor.getDouble(cursor.getColumnIndex(DBSchema.LocationsTable.Cols.LATITUDE)));
-                location.setLongitude(cursor.getDouble(cursor.getColumnIndex(DBSchema.LocationsTable.Cols.LONGITUDE)));
+                location.setLatitude(Double.valueOf(cursor.getString(cursor.getColumnIndex(DBSchema.LocationsTable.Cols.LATITUDE))));
+                location.setLongitude(Double.valueOf(cursor.getString(cursor.getColumnIndex(DBSchema.LocationsTable.Cols.LONGITUDE))));
                 Log.i("point", String.valueOf("get loc " + location.getLatitude() + " " + location.getLongitude()));
                 result.add(new Point(
                         cursor.getInt(cursor.getColumnIndex(DBSchema.LocationsTable.Cols.ID)),
@@ -81,8 +81,9 @@ public class DBHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 Location location = new Location("");
-                location.setLatitude(cursor.getDouble(cursor.getColumnIndex(DBSchema.LocationsTable.Cols.LATITUDE)));
-                location.setLongitude(cursor.getDouble(cursor.getColumnIndex(DBSchema.LocationsTable.Cols.LONGITUDE)));
+
+                location.setLatitude((double) cursor.getFloat(cursor.getColumnIndex(DBSchema.LocationsTable.Cols.LATITUDE)));
+                location.setLongitude((double) cursor.getFloat(cursor.getColumnIndex(DBSchema.LocationsTable.Cols.LONGITUDE)));
                 Point point = new Point(cursor.getInt(cursor.getColumnIndex("id")),
                         null, location,
                         cursor.getInt(cursor.getColumnIndex(DBSchema.LocationsTable.Cols.TRACK_ID)));
@@ -121,7 +122,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         ContentValues value = new ContentValues();
         value.put(DBSchema.TracksTable.Cols.NAME, track.getName());
-        long trackId = dbWrite.insert(DBSchema.LocationsTable.NAME, null, value);
+        long trackId = dbWrite.insert(DBSchema.TracksTable.NAME, null, value);
         for (Point point : track.getPoints()) {
             addLocation(point);
         }
@@ -136,6 +137,7 @@ public class DBHelper extends SQLiteOpenHelper {
         value.put(DBSchema.LocationsTable.Cols.NAME, point.getName());
         value.put(DBSchema.LocationsTable.Cols.LATITUDE, point.getLocation().getLatitude());
         value.put(DBSchema.LocationsTable.Cols.LONGITUDE, point.getLocation().getLongitude());
+        value.put(DBSchema.LocationsTable.Cols.TRACK_ID, point.getTrackId());
         dbWrite.insert(DBSchema.LocationsTable.NAME, null, value);
     }
 
@@ -165,16 +167,25 @@ public class DBHelper extends SQLiteOpenHelper {
         value.put(DBSchema.LocationsTable.Cols.LATITUDE, String.valueOf(point.getLocation().getLatitude()));
         value.put(DBSchema.LocationsTable.Cols.LONGITUDE, String.valueOf(point.getLocation().getLongitude()));
         dbWrite.update(DBSchema.LocationsTable.NAME, value, "id =?",
-                new String[]{String.valueOf(point.getId())});
+                new String[]{String.valueOf(point.getPointId())});
 
     }
 
     public void deleteLocation(Point loc) {
-        dbWrite.delete(DBSchema.LocationsTable.NAME, "id = ?", new String[]{String.valueOf(loc.getId())});
+        dbWrite.delete(DBSchema.LocationsTable.NAME, "id = ?", new String[]{String.valueOf(loc.getPointId())});
     }
 
     public void deleteAllLocation() {
         dbWrite.execSQL("delete from " + DBSchema.LocationsTable.NAME);
     }
 
+    public void deleteAllTracks(){
+        List<Track> tracks = getAllTracks();
+        for(Track track: tracks){
+            for(Point point:track.getPoints()){
+                deleteLocation(point);
+            }
+            dbWrite.delete(DBSchema.TracksTable.NAME, "id = ?", new String[]{String.valueOf(track.getId())});
+        }
+    }
 }

@@ -38,7 +38,7 @@
 
 
         <Button
-            android:id="@+id/buttonSaveLoc"
+            android:id="@+id/buttonSaveLoc1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
         android:layout_weight="1"

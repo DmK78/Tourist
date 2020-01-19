@@ -45,6 +45,7 @@ public class TrackingFragment extends Fragment implements OnMapReadyCallback {
     private TextView textViewCount;
     private TrackerClickListener clickListener;
 
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -57,7 +58,7 @@ public class TrackingFragment extends Fragment implements OnMapReadyCallback {
         buttonStop = view.findViewById(R.id.btnTrackerStop);
         buttonGetLoc = view.findViewById(R.id.butTrackerGetLoc);
         buttonHistory=view.findViewById(R.id.btnTrackerHistory);
-        //textViewCount=view.findViewById(R.id.tvTrackerCount);
+        textViewCount = view.findViewById(R.id.textViewCountPoint);
         buttonGetLoc.setOnClickListener(this::getCurrentLocation);
         buttonStart.setOnClickListener(this::startTracker);
         buttonStop.setOnClickListener(this::stopTracker);
@@ -106,7 +107,7 @@ public class TrackingFragment extends Fragment implements OnMapReadyCallback {
                 //Toast.makeText(getContext(), "Location was changed!", Toast.LENGTH_SHORT).show();
                 Point point = new Point();
                 point.setLocation(location);
-                dbHelper.addLocation(point);
+                //dbHelper.addLocation(point);
                 if (lastLocation.getLocation() != null) {
                     Polyline line = googleMap.addPolyline(new PolylineOptions()
                             .add(
@@ -180,4 +181,5 @@ public class TrackingFragment extends Fragment implements OnMapReadyCallback {
     public interface TrackerClickListener {
         void onHistoryFragmentClick();
     }
+
 }

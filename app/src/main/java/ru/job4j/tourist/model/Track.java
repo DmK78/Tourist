@@ -1,19 +1,29 @@
 package ru.job4j.tourist.model;
 
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.Index;
+import androidx.room.PrimaryKey;
+
 import java.util.List;
 import java.util.Objects;
 
+@Entity(tableName = "tracks",indices = {@Index("id")})
 public class Track {
+    @PrimaryKey(autoGenerate = true)
     private int id;
     private String name;
     private List<Point> points;
 
+    public Track() {
+    }
+@Ignore
     public Track(String name, List<Point> points) {
         this.name = name;
         this.points = points;
     }
-
-    public Track(int id, String name, List<Point> points) {
+@Ignore
+public Track(int id, String name, List<Point> points) {
         this.id = id;
         this.name = name;
         this.points = points;

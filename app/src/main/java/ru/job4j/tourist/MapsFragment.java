@@ -33,10 +33,14 @@ import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import ru.job4j.tourist.dbutils.DBHelper;
+import ru.job4j.tourist.dbutils.MainModel;
 import ru.job4j.tourist.model.Point;
+import ru.job4j.tourist.model.Track;
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
@@ -57,9 +61,22 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+/*        MainModel mainModel = new MainModel(getContext());
+        mainModel.deleteAllTracks();
+        List<Point> points = new ArrayList<>();
+        *//*points.add(new Point("1", new Location("1")));
+        points.add(new Point("2", new Location("2")));*//*
+
+        Track track = new Track("aa", points);
+        long l = mainModel.insertTrack(track);
+        Point point = new Point("1", new Location("1"),(int)l);
+        Point point1 = new Point("2", new Location("2"),(int)l);
+        mainModel.insertPoint(point);
+        mainModel.insertPoint(point1);
+        List<Track> tracks = mainModel.getAllTracks();*/
 
         buttonCurrentLoc = view.findViewById(R.id.buttonCurrentLoc);
-        buttonSaveLoc = view.findViewById(R.id.buttonSaveLoc);
+        buttonSaveLoc = view.findViewById(R.id.buttonSaveLoc1);
         buttonClearHistory = view.findViewById(R.id.buttonClearHistory);
         buttonShowHistory = view.findViewById(R.id.buttonViewHistory);
         buttonSaveLoc.setText("Save location (" + dbHelper.getAllPoints().size() + ")");
@@ -95,9 +112,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     }
 
 
-
     private void clearHistory(View view) {
-        if(!dbHelper.getAllPoints().isEmpty()){
+        if (!dbHelper.getAllPoints().isEmpty()) {
             new AlertDialog.Builder(getContext())
                     .setTitle("Confirmation")
                     .setMessage("Do you really want to clear history?")
@@ -117,7 +133,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         }
 
 
-
     }
 
     private void viewHistory(View view) {
@@ -131,16 +146,16 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                 Math.round(lastLocation.getLocation().getLatitude() * 1000d) / 1000d &&
                 Math.round(mLocation.getLongitude() * 1000d) / 1000d !=
                         Math.round(lastLocation.getLocation().getLongitude() * 1000d) / 1000d) {*/
-            Point point = new Point();
-            Location location = new Location("");
-            location.setLatitude(mLocation.getLatitude());
-            location.setLongitude(mLocation.getLongitude());
-            point.setLocation(location);
-            point.setName("" + point.getLocation().getLatitude() + ", " + point.getLocation().getLongitude());
-            dbHelper.addLocation(point);
-            buttonSaveLoc.setText("Save location (" + dbHelper.getAllPoints().size() + ")");
-            lastLocation = point;
-        MarkerOptions marker = new MarkerOptions().position(new LatLng(mLocation.getLatitude(),mLocation.getLongitude())).title("Hello Maps");
+        Point point = new Point();
+        Location location = new Location("");
+        location.setLatitude(mLocation.getLatitude());
+        location.setLongitude(mLocation.getLongitude());
+        point.setLocation(location);
+        point.setName("" + point.getLocation().getLatitude() + ", " + point.getLocation().getLongitude());
+        dbHelper.addLocation(point);
+        buttonSaveLoc.setText("Save location (" + dbHelper.getAllPoints().size() + ")");
+        lastLocation = point;
+        MarkerOptions marker = new MarkerOptions().position(new LatLng(mLocation.getLatitude(), mLocation.getLongitude())).title("Hello Maps");
         marker.flat(true);
         googleMap.addMarker(marker);
 
@@ -161,7 +176,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onLocationChanged(Location location) {
                 mLocation = location;
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(),location.getLongitude()), 15));
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 15));
             }
 
 
