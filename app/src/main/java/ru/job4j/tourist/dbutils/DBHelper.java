@@ -11,9 +11,11 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.job4j.tourist.MapsContract;
+import ru.job4j.tourist.maps.MapsContract;
+import ru.job4j.tourist.maps_history.MapsHistoryContract;
 import ru.job4j.tourist.model.Point;
 import ru.job4j.tourist.model.Track;
+import ru.job4j.tourist.tracking.TrackingContract;
 
 /**
  * @author Dmitry Kolganov (mailto:dmk78@inbox.ru)
@@ -21,7 +23,7 @@ import ru.job4j.tourist.model.Track;
  * @version $Id$
  */
 
-public class DBHelper extends SQLiteOpenHelper implements MapsContract.MapsModelInterface {
+public class DBHelper extends SQLiteOpenHelper implements MapsContract.MapsModelInterface, MapsHistoryContract.Model, TrackingContract.model {
     SQLiteDatabase dbRead = getReadableDatabase();
     SQLiteDatabase dbWrite = getWritableDatabase();
     private static DBHelper mInstance;
@@ -264,5 +266,27 @@ public class DBHelper extends SQLiteOpenHelper implements MapsContract.MapsModel
             } while (cursor.moveToNext());
         }
         return result;
+    }
+    public Track getTrack(int id){
+        Track result = null;
+        String selection = "id =?";
+        String[] selectionArgs = new String[]{String.valueOf(id)};
+        Cursor cursor = dbRead.query(
+                DBSchema.TracksTable.NAME,
+                null, selection, selectionArgs,
+                null, null, null
+        );
+        if(cursor.moveToFirst()){
+            result = new Track(
+                    cursor.getInt(cursor.getColumnIndex(DBSchema.TracksTable.Cols.ID)),
+                    cursor.getString(cursor.getColumnIndex(DBSchema.TracksTable.Cols.NAME)),
+                    new ArrayList<>());
+            result.setPoints(getPointsByTrack(result));
+        }
+
+        return result;
+
+
+
     }
 }

@@ -1,11 +1,11 @@
-package ru.job4j.tourist;
+package ru.job4j.tourist.maps;
 
 import android.content.Context;
 import android.location.Location;
 
-import com.google.android.gms.maps.GoogleMap;
 import com.google.android.libraries.places.api.model.Place;
 
+import ru.job4j.tourist.maps.MapsContract;
 import ru.job4j.tourist.model.Point;
 
 /**
@@ -29,7 +29,7 @@ public class MapsPresenter implements MapsContract.MapsPresenterInterface {
     }
 
     @Override
-    public void onIMHereClicked(Location location, GoogleMap googleMap) {
+    public void onIMHereClicked(Location location) {
         if (location != null) {
             currentPoint = new Point(location.getLatitude() + ", " + location.getLongitude(), location);
             viewInterface.focusCamers(location);
@@ -48,6 +48,7 @@ public class MapsPresenter implements MapsContract.MapsPresenterInterface {
             viewInterface.refreshBtnSaveCount(modelInterface.getAllFavPoints().size());
             viewInterface.setMarker(currentPoint.getLocation());
             lastPoint = currentPoint;
+
         }
     }
 
@@ -65,17 +66,12 @@ public class MapsPresenter implements MapsContract.MapsPresenterInterface {
     }
 
     @Override
-    public Location onPlaceSelectedClicked(Place place) {
+    public void onPlaceSelectedClicked(Place place) {
         Location result = new Location(place.getName());
         result.setLatitude(place.getLatLng().latitude);
         result.setLongitude(place.getLatLng().longitude);
-        viewInterface.setMarker(result);
+        viewInterface.focusCamers(result);
         currentPoint = new Point(place.getName(), result);
-
-
-        //googleMap.addMarker(marker);
-        //googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pos, 15));
-        return result;
     }
 
 

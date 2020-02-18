@@ -1,6 +1,10 @@
-package ru.job4j.tourist;
+package ru.job4j.tourist.tracking_history;
 
 import androidx.fragment.app.Fragment;
+
+import ru.job4j.tourist.BaseActivity;
+import ru.job4j.tourist.tracking_history.TrackingHistoryFragment;
+
 
 /**
  * @author Dmitry Kolganov (mailto:dmk78@inbox.ru)

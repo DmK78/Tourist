@@ -15,7 +15,7 @@
         map:layout_constraintEnd_toEndOf="parent"
         map:layout_constraintStart_toStartOf="parent"
         map:layout_constraintTop_toTopOf="parent"
-        tools:context=".MapsFragment" />
+        tools:context=".maps.MapsFragment" />
 
     <Button
         android:id="@+id/btnTrackerStart"
@@ -35,16 +35,6 @@
         map:layout_constraintEnd_toEndOf="@id/btnTrackerHistory"
         map:layout_constraintStart_toEndOf="@+id/btnTrackerStart" />
 
-    <ImageButton
-        android:id="@+id/butTrackerGetLoc"
-        android:layout_width="56dp"
-        android:layout_height="wrap_content"
-        android:src="@android:drawable/ic_menu_compass"
-        android:text="Button"
-        map:layout_constraintEnd_toEndOf="parent"
-        map:layout_constraintStart_toStartOf="parent"
-        map:layout_constraintTop_toTopOf="@+id/map" />
-
     <Button
         android:id="@+id/btnTrackerHistory"
         android:layout_width="wrap_content"
@@ -61,6 +51,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         map:layout_constraintEnd_toEndOf="parent"
+        map:layout_constraintStart_toStartOf="parent"
         map:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

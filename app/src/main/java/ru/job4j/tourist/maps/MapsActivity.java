@@ -1,29 +1,20 @@
-package ru.job4j.tourist;
+package ru.job4j.tourist.maps;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
-import android.location.Location;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Toast;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
+import ru.job4j.tourist.BaseActivity;
 
-import java.util.List;
+import ru.job4j.tourist.maps_history.MapsHistoryActivity;
+import ru.job4j.tourist.R;
+import ru.job4j.tourist.tracking.TrackingActivity;
 
-import ru.job4j.tourist.dbutils.MainModel;
-import ru.job4j.tourist.model.Point;
-import ru.job4j.tourist.model.Track;
 
 /**
  * @author Dmitry Kolganov (mailto:dmk78@inbox.ru)
@@ -68,6 +59,6 @@ public class MapsActivity extends BaseActivity implements MapsFragment.OnMapsFrg
 
     @Override
     public void onShowHistoryClicked() {
-        startActivity(new Intent(getApplicationContext(), HistoryActivity.class));
+        startActivity(new Intent(getApplicationContext(), MapsHistoryActivity.class));
     }
 }

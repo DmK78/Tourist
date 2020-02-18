@@ -1,4 +1,4 @@
-package ru.job4j.tourist;
+package ru.job4j.tourist.maps;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -33,6 +33,7 @@ import com.google.android.libraries.places.widget.listener.PlaceSelectionListene
 
 import java.util.Arrays;
 
+import ru.job4j.tourist.R;
 import ru.job4j.tourist.dbutils.DBHelper;
 
 /**
@@ -41,7 +42,7 @@ import ru.job4j.tourist.dbutils.DBHelper;
  * @version $Id$
  */
 
-public class MapsFragment extends Fragment implements OnMapReadyCallback, MapsContract.MapsViewInterface {
+public class MapsFragment extends Fragment implements OnMapReadyCallback, MapsContract.MapsViewInterface  {
 
     private GoogleMap googleMap;
     private Location mLocation;
@@ -76,7 +77,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, MapsCo
         buttonClearHistory = view.findViewById(R.id.buttonClearHistory);
         buttonShowHistory = view.findViewById(R.id.buttonViewHistory);
         refreshBtnSaveCount(presenter.getFavPointsCount());
-        buttonCurrentLoc.setOnClickListener(view1 -> presenter.onIMHereClicked(mLocation, googleMap));
+        buttonCurrentLoc.setOnClickListener(view1 -> presenter.onIMHereClicked(mLocation));
         buttonSaveLoc.setOnClickListener(view12 -> presenter.onSaveLocationClicked());
         buttonShowHistory.setOnClickListener(this::viewHistory);
         buttonClearHistory.setOnClickListener(this::clearHistory);
@@ -178,6 +179,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, MapsCo
         googleMap.addMarker(marker);
         focusCamers(location);
     }
+
+
 
     public interface OnMapsFrgClickListener {
         void onShowHistoryClicked();

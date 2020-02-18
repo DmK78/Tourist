@@ -1,4 +1,4 @@
-package ru.job4j.tourist;
+package ru.job4j.tourist.tracking_history;
 
 import android.location.Location;
 import android.os.Bundle;
@@ -29,6 +29,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import java.util.ArrayList;
 import java.util.List;
 
+import ru.job4j.tourist.R;
 import ru.job4j.tourist.dbutils.DBHelper;
 import ru.job4j.tourist.dbutils.MainModel;
 import ru.job4j.tourist.model.Point;

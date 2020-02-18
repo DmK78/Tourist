@@ -21,7 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="5"
-        tools:context=".MapsFragment" />
+        tools:context=".maps.MapsFragment" />
 
     <Button
         android:id="@+id/buttonCurrentLoc"

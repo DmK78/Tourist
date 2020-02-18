@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:layout_weight="2.1"
     android:orientation="vertical"
-    tools:context=".TrackingActivity">
+    tools:context=".tracking.TrackingActivity">
 
 
     <fragment
@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        tools:context=".TrackingActivity" />
+        tools:context=".tracking.TrackingActivity" />
 
     <ListView
         android:id="@+id/listViewTracks"

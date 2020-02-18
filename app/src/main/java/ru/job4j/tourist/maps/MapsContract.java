@@ -1,4 +1,4 @@
-package ru.job4j.tourist;
+package ru.job4j.tourist.maps;
 
 import android.location.Location;
 import android.location.LocationListener;
@@ -19,7 +19,7 @@ import ru.job4j.tourist.model.Point;
 public interface MapsContract {
     interface MapsPresenterInterface {
 
-        void onIMHereClicked(Location location, GoogleMap googleMap);
+        void onIMHereClicked(Location location);
 
         void onSaveLocationClicked();
 
@@ -27,7 +27,7 @@ public interface MapsContract {
 
         int getFavPointsCount();
 
-        Location onPlaceSelectedClicked(Place place);
+        void onPlaceSelectedClicked(Place place);
     }
 
     interface MapsViewInterface {

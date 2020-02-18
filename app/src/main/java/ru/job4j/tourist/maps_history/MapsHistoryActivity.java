@@ -1,6 +1,8 @@
-package ru.job4j.tourist;
+package ru.job4j.tourist.maps_history;
 
 import androidx.fragment.app.Fragment;
+
+import ru.job4j.tourist.BaseActivity;
 
 /**
  * @author Dmitry Kolganov (mailto:dmk78@inbox.ru)
@@ -8,11 +10,11 @@ import androidx.fragment.app.Fragment;
  * @version $Id$
  */
 
-public class HistoryActivity extends BaseActivity  {
+public class MapsHistoryActivity extends BaseActivity {
 
 
     @Override
     public Fragment loadFrg() {
-        return new HistoryFragment();
+        return new MapsHistoryFragment();
     }
 }
